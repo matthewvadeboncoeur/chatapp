@@ -12,6 +12,7 @@ body {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    background-image: url('53-light-purple-gradient.jpg');
   }
 
 .header {
@@ -42,7 +43,7 @@ body {
 
 .fullscreen-div {
     flex-grow: 1;
-    margin: 2vw 2vh;
+    margin: 2vh;
     background-color: red;
     display: flex;
 }
@@ -64,7 +65,7 @@ body {
 }
 
 .friends-list li {
-    font-size: clamp(2vw, 5vw, 50px);
+    font-size: clamp(2vw, 4.2vw, 50px);
     border-bottom: 3px solid black;
     padding: 1vw;
 }
@@ -88,6 +89,46 @@ body {
     transition: all 0.3s ease;
     cursor: pointer; 
     background-color: aqua;
+}
+
+.chat-list {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5vw;
+    gap: 2vh;
+}
+
+.chat-list li {
+    list-style: none;
+}
+
+.received {
+    align-self: flex-start;
+}
+
+.sent {
+    align-self: flex-end;
+}
+
+.chat-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.message-div {
+    background-color: red;
+    display: flex;
+    height: 7.5vh;
+    padding: 10px 10px;
+}
+
+.message-input {
+    width: 85%;
+}
+
+.message-button {
+    width: 15%;
 }
 
 
