@@ -65,5 +65,30 @@ body {
 
 .friends-list li {
     font-size: clamp(2vw, 5vw, 50px);
+    border-bottom: 3px solid black;
+    padding: 1vw;
 }
+
+.add-friend-div {
+    display: flex;
+    height: 8vh;
+}
+
+.add-friend-div input {
+    font-size: 1.7vw;
+    width: 80%;
+}
+
+.add-friend-div button {
+    font-size: 1.6vw;
+    width: 20%;
+}
+
+.friends-list li:hover {
+    transition: all 0.3s ease;
+    cursor: pointer; 
+    background-color: aqua;
+}
+
+
 
