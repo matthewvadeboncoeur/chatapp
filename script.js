@@ -1,8 +1,46 @@
 // script.js
 document.addEventListener("DOMContentLoaded", function () {
 
+    let selectedFriend = null;
+    let curUser = null;
+
     const addFriendButton = document.getElementById('add-friend-button');
     addFriendButton.addEventListener('click', addFriend);
+
+    const signUpButton = document.getElementById('signUpButton');
+    signUpButton.addEventListener('click', signUp);
+
+    const sendMessageButton = document.getElementById('message-button');
+    sendMessageButton.addEventListener('click', sendMessage);
+
+
+
+
+
+    function sendMessage() {
+        const chatInput = document.getElementById('message-input');
+        if (chatInput.value == '') return;
+        const chatList = document.getElementById('chat-list');
+        const newMessage = document.createElement('li');
+        newMessage.className = 'sent';
+        newMessage.textContent = chatInput.value;
+        chatList.appendChild(newMessage);
+
+        fetch('http://localhost:3000/messages', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                sender: curUser,
+                receiver: selectedFriend,
+                text: chatInput.value
+            })
+        })
+        .then(res => res.json())
+        .then(loadMessages)
+    }
+
 
 
     function addFriend() {
@@ -12,8 +50,60 @@ document.addEventListener("DOMContentLoaded", function () {
         const friendsList = document.getElementById('friends-list');
         const newFriendLi = document.createElement('li');
         newFriendLi.textContent = addFriendInput.value;
+
+        newFriendLi.addEventListener('click', loadFriend);
+
         friendsList.appendChild(newFriendLi);
         addFriendInput.value = '';
+    }
+
+    function loadFriend(e) {
+        selectedFriend = e.target.textContent;
+        loadMessages();
+    }
+
+    function loadMessages() {
+        fetch('http://localhost:3000/messages')
+        .then(res => res.json())
+        .then(data => {
+            const filtered = data.filter(msg => 
+                (msg.sender === curUser && msg.receiver === selectedFriend) ||
+                (msg.sender === selectedFriend && msg.receiver === curUser)
+            );
+            const chatBox = document.getElementById('chat-list');
+            chatBox.innerHTML = '';
+
+            filtered.forEach(msg => {
+                const li = document.createElement('li');
+                li.textContent = msg.text;
+                li.className = msg.sender === curUser ? 'sent' : 'received';
+                chatBox.appendChild(li);
+            }) 
+        })
+    }
+
+    function signUp() {
+        const usernameInput = document.getElementById('authUsername').value;
+        const passwordInput = document.getElementById('authPassword').value;
+
+        fetch('http://localhost:3000/signup', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: usernameInput,
+                password: passwordInput
+            })
+        })
+        .then(res => {
+            return res.json();
+        })
+        .then(data => {
+            curUser = usernameInput;
+            alert(data.message);
+            document.getElementById('authPassword').value = '';
+        })
     }
 
 

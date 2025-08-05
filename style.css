@@ -12,7 +12,7 @@ body {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    background-image: url('53-light-purple-gradient.jpg');
+    /* background-image: url('./assets/53-light-purple-gradient.jpg'); */
   }
 
 .header {

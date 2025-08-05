@@ -1,0 +1,45 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Matt's Chat App</h1>
+        <div class="auth-controls">
+            <input type="text" placeholder="username" id="authUsername">
+            <input type="text" placeholder="password" id="authPassword">
+            <button>Log In</button>
+            <button id="signUpButton">Sign up</button>
+        </div>
+    </div>
+    <div class="fullscreen-div">
+        <div class="friends-div">
+            <div class="add-friend-div">
+                <input type="text" placeholder="Enter friend's username" id="add-friend-input">
+                <button id="add-friend-button">Add Friend</button>
+            </div>
+            <ul class="friends-list" id="friends-list">
+            </ul>
+        </div>
+        <div class="chat-div">
+            <ul class="chat-list" id="chat-list">
+                <li class="received">Hey there</li>
+                <li class="sent">How are you?</li>
+                <li class="received">Im doing great how are you</li>
+                <li class="sent">doing good thanks for asking mate</li>
+            </ul>
+            <div class="message-div">
+                <input type="text" class="message-input" id="message-input">
+                <button class="message-button" id="message-button">send</button>
+            </div>
+        </div>
+    </div>
+    <script src="./script.js"></script>
+</body>
+</html>
