@@ -7,14 +7,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const addFriendButton = document.getElementById('add-friend-button');
     addFriendButton.addEventListener('click', addFriend);
 
-    const signUpButton = document.getElementById('signUpButton');
-    signUpButton.addEventListener('click', signUp);
 
     const sendMessageButton = document.getElementById('message-button');
     sendMessageButton.addEventListener('click', sendMessage);
-
-
-
+    
+    loadFriends();
 
 
     function sendMessage() {
@@ -41,6 +38,22 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(loadMessages)
     }
 
+
+    function loadFriends() {
+        fetch(`http://localhost:3000/friends/${curUser}`)
+        .then(response => response.json())
+        .then(data => {
+            const friendsList = document.getElementById('friends-list');
+            friendsList.innerHTML = '';
+            for (let i = 0; i < data.length; i++) {
+                const newFriendLi = document.createElement('li');
+                newFriendLi.textContent = data[i];
+                newFriendLi.addEventListener('click', loadFriend);
+                friendsList.appendChild(newFriendLi);
+            }
+        })
+
+    }
 
 
     function addFriend() {
@@ -92,7 +105,4 @@ document.addEventListener("DOMContentLoaded", function () {
             }) 
         })
     }
-
-
-
 });

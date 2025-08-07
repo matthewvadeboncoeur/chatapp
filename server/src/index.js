@@ -69,6 +69,12 @@ app.post('/friends', (req, res) => {
     console.log(friends);
 })
 
+app.get('/friends/:username', (req, res) => {
+    const { username } = req.params;
+    const userFriends = friends[username] || [];
+    res.json(userFriends);
+})
+
 app.listen(PORT, () => {
     console.log(`Server running on Port ${PORT}`);
 });
