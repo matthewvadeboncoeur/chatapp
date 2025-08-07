@@ -10,10 +10,24 @@
 </head>
 <body>
     <div class="auth">
-        <div class="auth-buttons">
+        <div class="auth-buttons" id="auth-buttons">
             <button id="logIn">Log In</button>
             <button id="signUp">Sign Up</button>
         </div>
+        <div id="logInDiv" class="hidden">
+            <h1>Welcome back! Please Log In!</h1>
+            <input type="text" placeholder="username" id="usernameL">
+            <input type="password" placeholder="password" id="passwordL">
+            <img src="./assets/arrow-pointing-to-right-in-a-circle.png" alt="next-button" id="nextLog">
+        </div>
+        <div id="signUpDiv" class="hidden">
+            <h1>Sign Up to Get Started!</h1>
+            <input type="text" placeholder="username" id="usernameS">
+            <input type="password" placeholder="password" id="passwordS">
+            <img src="./assets/arrow-pointing-to-right-in-a-circle.png" alt="next-button" id="nextSign">
+        </div>
     </div>
+
+    <script src="./auth.js"></script>
 </body>
 </html>

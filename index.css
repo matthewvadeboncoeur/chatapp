@@ -52,3 +52,52 @@ body {
 #logIn {
     background-color: rgb(197, 196, 246);
 }
+
+.hidden {
+    display: none;
+}
+
+#logInDiv {
+    width: 80%;
+    height: 80%;
+    position: relative;
+}
+
+#signUpDiv {
+    width: 80%;
+    height: 80%;
+    position: relative;
+}
+
+#signUpDiv input {
+    width: 70%;
+    height: 40px;
+    font-size: 2rem;
+}
+
+#logInDiv input {
+    width: 70%;
+    height: 40px;
+    font-size: 2rem;
+}
+
+.flex {
+    display: flex;
+    flex-direction: column;
+    gap: 5vh;
+}
+
+img {
+    position: absolute;
+    bottom: 20px;  /* distance from bottom */
+    right: 20px;   /* distance from right */
+    width: 50px;
+    height: auto;
+    cursor: pointer;
+}
+
+img:hover {
+    transition: all 0.3s ease;
+    width: 55px;
+    height: auto;
+}

@@ -16,29 +16,12 @@ body {
   }
 
 .header {
-    background-color: red;
-    font-size: clamp(1vh, 2vw, 20px);
+    font-size: clamp(1vh, 2.3vw, 30px);
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin: 15px 15px;
     height: 6vh;
-}
-
-.auth-controls {
-    gap: 1vw;
-    display: flex; 
-}
-
-.auth-controls input {
-    width: 20vw;
-    font-size: 1.3rem;
-}
-
-.auth-controls button {
-    width: 5vw;
-    min-width: 50px;
-    font-size: 1.2rem;
 }
 
 .fullscreen-div {

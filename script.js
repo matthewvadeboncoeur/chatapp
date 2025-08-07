@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     let selectedFriend = null;
-    let curUser = null;
+    const curUser = localStorage.getItem("curUser");
 
     const addFriendButton = document.getElementById('add-friend-button');
     addFriendButton.addEventListener('click', addFriend);
@@ -55,6 +55,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         friendsList.appendChild(newFriendLi);
         addFriendInput.value = '';
+
+        fetch('http://localhost:3000/friends', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user: curUser,
+                friend: newFriendLi.textContent
+            })
+        })
     }
 
     function loadFriend(e) {
@@ -81,49 +92,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }) 
         })
     }
-
-    function signUp() {
-        const usernameInput = document.getElementById('authUsername').value;
-        const passwordInput = document.getElementById('authPassword').value;
-
-        fetch('http://localhost:3000/signup', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: usernameInput,
-                password: passwordInput
-            })
-        })
-        .then(res => {
-            return res.json();
-        })
-        .then(data => {
-            curUser = usernameInput;
-            alert(data.message);
-            document.getElementById('authPassword').value = '';
-        })
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
