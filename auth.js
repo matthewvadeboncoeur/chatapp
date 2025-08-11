@@ -9,7 +9,7 @@ const logInForm = document.getElementById('logInDiv');
 const signUpForm = document.getElementById('signUpDiv');
 
 const nextSign = document.getElementById('nextSign');
-nextSign.addEventListener('click', signUn);
+nextSign.addEventListener('click', signUp);
 
 const nextLog = document.getElementById('nextLog');
 nextLog.addEventListener('click', logIn)
@@ -60,7 +60,7 @@ function logIn() {
 }
 
 
-function signUn() {
+function signUp() {
     const username = document.getElementById('usernameS');
     const password = document.getElementById('passwordS');
     if (!username.value || !password.value) return;

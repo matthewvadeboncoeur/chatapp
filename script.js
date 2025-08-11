@@ -1,6 +1,13 @@
 // script.js
 document.addEventListener("DOMContentLoaded", function () {
-
+    const socket = io('http://localhost:3000');
+    socket.on('message', (message) => {
+        const chatList = document.getElementById('chat-list');
+        const newMessage = document.createElement('li');
+        newMessage.textContent = message.text;
+        newMessage.className = message.sender === curUser ? 'sent' : 'received';
+        chatList.appendChild(newMessage);
+    })
     let selectedFriend = null;
     const curUser = localStorage.getItem("curUser");
 
@@ -12,30 +19,22 @@ document.addEventListener("DOMContentLoaded", function () {
     sendMessageButton.addEventListener('click', sendMessage);
     
     loadFriends();
+    
 
 
     function sendMessage() {
         const chatInput = document.getElementById('message-input');
         if (chatInput.value == '') return;
+        if (selectedFriend === null) return alert("Please select a friend");
         const chatList = document.getElementById('chat-list');
         const newMessage = document.createElement('li');
         newMessage.className = 'sent';
         newMessage.textContent = chatInput.value;
-        chatList.appendChild(newMessage);
-
-        fetch('http://localhost:3000/messages', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                sender: curUser,
-                receiver: selectedFriend,
-                text: chatInput.value
-            })
-        })
-        .then(res => res.json())
-        .then(loadMessages)
+        // chatList.appendChild(newMessage);
+        const text = chatInput.value.trim();
+        const message = {sender: curUser, receiver: selectedFriend, text};
+        socket.emit('send_message', message);
+        chatInput.value = '';
     }
 
 
@@ -83,8 +82,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function loadFriend(e) {
         selectedFriend = e.target.textContent;
+        socket.emit('join_dm', { me: curUser, friend: selectedFriend });
         loadMessages();
     }
+
 
     function loadMessages() {
         fetch('http://localhost:3000/messages')
