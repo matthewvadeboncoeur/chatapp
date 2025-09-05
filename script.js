@@ -1,15 +1,27 @@
 // script.js
-document.addEventListener("DOMContentLoaded", function () {
-    const socket = io('http://localhost:3000');
+import { getToken } from "./auth.js";
+document.addEventListener("DOMContentLoaded", async function () {
+    const token = await getToken();
+    if (!token) {
+        window.location.href = 'index.html';
+        return;
+    }
+    let curUser = token.user.username;
+    console.log(curUser);
+    const socket = io('http://localhost:3000', {
+        auth: { token: token.accessToken }
+    });
+    loadFriends();
     socket.on('message', (message) => {
         const chatList = document.getElementById('chat-list');
         const newMessage = document.createElement('li');
         newMessage.textContent = message.text;
         newMessage.className = message.sender === curUser ? 'sent' : 'received';
         chatList.appendChild(newMessage);
+        chatList.scrollTop = chatList.scrollHeight;
     })
     let selectedFriend = null;
-    const curUser = localStorage.getItem("curUser");
+    let pastEvent = null;
 
     const addFriendButton = document.getElementById('add-friend-button');
     addFriendButton.addEventListener('click', addFriend);
@@ -18,19 +30,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const sendMessageButton = document.getElementById('message-button');
     sendMessageButton.addEventListener('click', sendMessage);
     
-    loadFriends();
-    
 
 
-    function sendMessage() {
+    async function sendMessage() {
+        const token = await getToken();
         const chatInput = document.getElementById('message-input');
         if (chatInput.value == '') return;
         if (selectedFriend === null) return alert("Please select a friend");
-        const chatList = document.getElementById('chat-list');
-        const newMessage = document.createElement('li');
-        newMessage.className = 'sent';
-        newMessage.textContent = chatInput.value;
-        // chatList.appendChild(newMessage);
         const text = chatInput.value.trim();
         const message = {sender: curUser, receiver: selectedFriend, text};
         socket.emit('send_message', message);
@@ -38,9 +44,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    function loadFriends() {
-        fetch(`http://localhost:3000/friends/${curUser}`)
-        .then(response => response.json())
+    async function loadFriends() {
+        const token = await getToken();
+        fetch('http://localhost:3000/friends', {
+            headers: {
+                'Authorization': `Bearer ${token.accessToken}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem('auth');
+                    window.location.href = 'index.html';
+                }
+            }
+            return response.json();
+        })
         .then(data => {
             const friendsList = document.getElementById('friends-list');
             friendsList.innerHTML = '';
@@ -55,7 +74,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    function addFriend() {
+    async function addFriend() {
+        const token = await getToken();
         const addFriendInput = document.getElementById('add-friend-input');
         if (addFriendInput.value == '')
             return;
@@ -64,32 +84,57 @@ document.addEventListener("DOMContentLoaded", function () {
         newFriendLi.textContent = addFriendInput.value;
 
         newFriendLi.addEventListener('click', loadFriend);
-
-        friendsList.appendChild(newFriendLi);
         addFriendInput.value = '';
 
         fetch('http://localhost:3000/friends', {
             method: 'post',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token.accessToken}`
             },
             body: JSON.stringify({
-                user: curUser,
                 friend: newFriendLi.textContent
             })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message !== 'Friend added successfully')
+                    alert(data.message);
+                else
+                    friendsList.appendChild(newFriendLi);
         })
     }
 
-    function loadFriend(e) {
+    async function loadFriend(e) {
+        const token = await getToken();
+        if (pastEvent) {
+            pastEvent.target.classList.remove('selected-friend')
+        }
+        e.target.classList.add('selected-friend');
+        pastEvent = e;
         selectedFriend = e.target.textContent;
         socket.emit('join_dm', { me: curUser, friend: selectedFriend });
         loadMessages();
     }
 
 
-    function loadMessages() {
-        fetch('http://localhost:3000/messages')
-        .then(res => res.json())
+    async function loadMessages() {
+        const token = await getToken();
+        fetch('http://localhost:3000/messages', {
+            headers: {
+                'Authorization': `Bearer ${token.accessToken}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                    console.log('*');
+                    localStorage.removeItem('auth');
+                    window.location.href = 'index.html';
+                }
+            }
+            return response.json();
+        })
         .then(data => {
             const filtered = data.filter(msg => 
                 (msg.sender === curUser && msg.receiver === selectedFriend) ||
@@ -104,6 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 li.className = msg.sender === curUser ? 'sent' : 'received';
                 chatBox.appendChild(li);
             }) 
+            chatBox.scrollTop = chatBox.scrollHeight;
         })
     }
 });

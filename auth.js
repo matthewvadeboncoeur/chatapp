@@ -1,4 +1,5 @@
 // auth.js
+document.addEventListener("DOMContentLoaded", () => {
 
 const authButtons = document.getElementById('auth-buttons');
 
@@ -9,13 +10,13 @@ const logInForm = document.getElementById('logInDiv');
 const signUpForm = document.getElementById('signUpDiv');
 
 const nextSign = document.getElementById('nextSign');
-nextSign.addEventListener('click', signUp);
+if (nextSign) nextSign.addEventListener('click', signUp);
 
 const nextLog = document.getElementById('nextLog');
-nextLog.addEventListener('click', logIn)
+if (nextLog) nextLog.addEventListener('click', logIn);
 
-logInButton.addEventListener('click', func1);
-signUpButton.addEventListener('click', func2);
+if (logInButton) logInButton.addEventListener('click', func1);
+if (signUpButton) signUpButton.addEventListener('click', func2);
 
 function func1() {
     logInForm.classList.remove('hidden');
@@ -51,12 +52,17 @@ function logIn() {
     })
     .then(data => {
         if (data.message === 'Log-in successful!') {
+            localStorage.setItem("auth", JSON.stringify({
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken,
+                user: { username: username.value }
+            }));
             window.location.href = 'chat.html';
-            localStorage.setItem("curUser", username.value);
         } else {
             alert(data.message);
         }
-    })
+    }
+    )
 }
 
 
@@ -72,6 +78,7 @@ function signUp() {
         body: JSON.stringify({
             username: username.value,
             password: password.value,
+            friends: []
         })
     })
     .then(res => {
@@ -79,10 +86,43 @@ function signUp() {
     })
     .then(data => {
         if (data.message === 'Sign-up successful!') {
+            localStorage.setItem("auth", JSON.stringify({
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken,
+                user: { username: username.value }
+            }));
             window.location.href = 'chat.html';
-            localStorage.setItem("curUser", username.value);
         } else {
             alert(data.message);
         }
     })
+}
+
+
+
+})
+
+export async function getToken() {
+    const auth = JSON.parse(localStorage.getItem('auth'));
+    if (!auth) return null;
+    const { accessToken, refreshToken } = auth;
+    const payload = JSON.parse(atob(accessToken.split('.')[1]));
+    const isExpired = payload.exp * 1000 < Date.now();
+    if (!isExpired) return auth;
+    const res = await fetch('http://localhost:3000/refresh', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify( {token: refreshToken })
+    });
+
+    if (!res.ok) {
+        localStorage.removeItem('auth');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    const data = await res.json();
+    auth.accessToken = data.accessToken;
+    localStorage.setItem('auth', JSON.stringify(auth))
+    return auth;
 }
