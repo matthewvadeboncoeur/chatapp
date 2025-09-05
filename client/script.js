@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
     let curUser = token.user.username;
     console.log(curUser);
-    const socket = io('http://localhost:3000', {
+    const socket = io('https://chatapp-rd3j.onrender.com', {
         auth: { token: token.accessToken }
     });
     loadFriends();
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     async function loadFriends() {
         const token = await getToken();
-        fetch('http://localhost:3000/friends', {
+        fetch('https://chatapp-rd3j.onrender.com/friends', {
             headers: {
                 'Authorization': `Bearer ${token.accessToken}`
             }
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         newFriendLi.addEventListener('click', loadFriend);
         addFriendInput.value = '';
 
-        fetch('http://localhost:3000/friends', {
+        fetch('https://chatapp-rd3j.onrender.com/friends', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     async function loadMessages() {
         const token = await getToken();
-        fetch('http://localhost:3000/messages', {
+        fetch('https://chatapp-rd3j.onrender.com/messages', {
             headers: {
                 'Authorization': `Bearer ${token.accessToken}`
             }

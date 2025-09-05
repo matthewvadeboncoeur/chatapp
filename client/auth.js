@@ -37,7 +37,7 @@ function logIn() {
     const username = document.getElementById('usernameL');
     const password = document.getElementById('passwordL');
     if (!username.value || !password.value) return;
-    fetch('http://localhost:3000/login', {
+    fetch('https://chatapp-rd3j.onrender.com/login', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ function signUp() {
     const username = document.getElementById('usernameS');
     const password = document.getElementById('passwordS');
     if (!username.value || !password.value) return;
-    fetch('http://localhost:3000/signup', {
+    fetch('https://chatapp-rd3j.onrender.com/signup', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json'
@@ -109,7 +109,7 @@ export async function getToken() {
     const payload = JSON.parse(atob(accessToken.split('.')[1]));
     const isExpired = payload.exp * 1000 < Date.now();
     if (!isExpired) return auth;
-    const res = await fetch('http://localhost:3000/refresh', {
+    const res = await fetch('https://chatapp-rd3j.onrender.com/refresh', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify( {token: refreshToken })
