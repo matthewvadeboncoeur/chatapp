@@ -1,6 +1,6 @@
 // index.js
 require('dotenv').config();
-const verifyToken = require('../middleware/verifyToken');
+const verifyToken = require('./middleware/verifyToken');
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
@@ -11,10 +11,10 @@ const app = express();
 const server = http.createServer(app);
 const { Server } = require('socket.io');
 const mongoose = require('mongoose');
-const connectDB = require('../config/dbConn');
+const connectDB = require('./config/dbConn');
 const { Schema } = mongoose;
-const User = require('../models/User');
-const Message = require('../models/Message');
+const User = require('./models/User');
+const Message = require('./models/Message');
 
 connectDB();
 
